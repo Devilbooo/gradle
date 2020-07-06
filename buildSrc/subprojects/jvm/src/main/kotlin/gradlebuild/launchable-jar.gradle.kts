@@ -21,15 +21,9 @@ plugins {
     java
 }
 
-val manifestClasspath by configurations.creating {
-    isCanBeResolved = true
-    isCanBeConsumed = false
-    isTransitive = false
-
-    attributes {
-        attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
-        attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category.LIBRARY))
-        attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, objects.named(LibraryElements.JAR))
+val manifestClasspath = jvm.createResolvableConfiguration("manifestClasspath") {
+    requiresAttributes {
+        asJar()
     }
 }
 
@@ -49,12 +43,9 @@ val startScripts = tasks.register<GradleStartScriptGenerator>("startScripts") {
     launcherJar.from(tasks.jar)
 }
 
-configurations {
-    create("gradleScriptsElements") {
-        isVisible = false
-        isCanBeResolved = false
-        isCanBeConsumed = true
-        attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named("start-scripts"))
-        outgoing.artifact(startScripts)
+jvm.createOutgoingElements("gradleScriptsElements") {
+    providesAttributes {
+        library("start-scripts")
     }
+    artifact(startScripts)
 }
