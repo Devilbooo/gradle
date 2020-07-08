@@ -42,9 +42,10 @@ class InstantExecutionTestkitIntegrationTest extends AbstractInstantExecutionInt
         runner.forwardOutput()
         runner.withProjectDir(testDirectory)
         def result = runner.buildAndFail()
+        def output = result.output
 
         then:
-        result.output.contains("- Gradle runtime: support for using a Java agent with TestKit builds is not yet implemented with the configuration cache.")
+        output.contains("- Gradle runtime: support for using a Java agent with TestKit builds is not yet implemented with the configuration cache.")
 
         when:
         runner = GradleRunner.create()
@@ -52,8 +53,9 @@ class InstantExecutionTestkitIntegrationTest extends AbstractInstantExecutionInt
         runner.forwardOutput()
         runner.withProjectDir(testDirectory)
         result = runner.build()
+        output = result.output
 
         then:
-        !result.output.contains("configuration cache")
+        !output.contains("configuration cache")
     }
 }
